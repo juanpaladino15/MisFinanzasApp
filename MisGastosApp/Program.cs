@@ -1,3 +1,7 @@
+using Microsoft.AspNetCore.OData;
+using Microsoft.EntityFrameworkCore;
+using MisGastosApp.DataAccess;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -6,6 +10,14 @@ builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+builder.Services.AddDbContext<AplicationDbContext>(options => {
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
+});
+
+//Registro Servicios de Odata
+builder.Services.AddControllers().AddOData(options =>
+    options.Select().Filter().Count().OrderBy().Expand());
 
 var app = builder.Build();
 
